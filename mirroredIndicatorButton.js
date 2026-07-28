@@ -575,7 +575,9 @@ export const MirroredIndicatorButton = GObject.registerClass(
 
         _clearWorkspaceIndicatorContent() {
             if (this._workspaceNameLabelChangedId) {
-                this._sourceIndicator?.menu?.disconnect(this._workspaceNameLabelChangedId);
+                try {
+                    this._sourceIndicator?.menu?.disconnect(this._workspaceNameLabelChangedId);
+                } catch (e) {}
                 this._workspaceNameLabelChangedId = 0;
             }
             this._workspaceNameLabel = null;
@@ -588,7 +590,9 @@ export const MirroredIndicatorButton = GObject.registerClass(
 
             if (this._workspacePreviewSignalIds) {
                 for (const { object, id } of this._workspacePreviewSignalIds) {
-                    object.disconnect(id);
+                    try {
+                        object.disconnect(id);
+                    } catch (e) {}
                 }
                 this._workspacePreviewSignalIds = null;
             }
@@ -605,7 +609,9 @@ export const MirroredIndicatorButton = GObject.registerClass(
 
             if (this._allocationCloneSignals) {
                 for (const signal of this._allocationCloneSignals) {
-                    signal.source.disconnect(signal.id);
+                    try {
+                        signal.source?.disconnect(signal.id);
+                    } catch (e) {}
                 }
                 this._allocationCloneSignals = null;
             }
@@ -613,8 +619,10 @@ export const MirroredIndicatorButton = GObject.registerClass(
             // Source-presence handlers were connected with connectObject(this);
             // GJS auto-disconnects them on destroy, but disconnect explicitly
             // for the non-destroy cleanup path too.
-            this._sourceIndicator?.disconnectObject(this);
-            this._sourceIndicator?.get_first_child()?.disconnectObject(this);
+            try {
+                this._sourceIndicator?.disconnectObject(this);
+                this._sourceIndicator?.get_first_child()?.disconnectObject(this);
+            } catch (e) {}
             this._sourcePresenceWatched = false;
 
             const children = this.get_children();

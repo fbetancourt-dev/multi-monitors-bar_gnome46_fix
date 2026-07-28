@@ -759,12 +759,16 @@ const MultiMonitorsPanel = GObject.registerClass(
                 return;
 
             if (indicator._mmDestroyId) {
-                indicator.disconnect(indicator._mmDestroyId);
+                try {
+                    indicator.disconnect(indicator._mmDestroyId);
+                } catch (e) {}
                 indicator._mmDestroyId = 0;
             }
 
             if (indicator._mmMenuSetId) {
-                indicator.disconnect(indicator._mmMenuSetId);
+                try {
+                    indicator.disconnect(indicator._mmMenuSetId);
+                } catch (e) {}
                 indicator._mmMenuSetId = 0;
             }
         }
@@ -774,11 +778,16 @@ const MultiMonitorsPanel = GObject.registerClass(
             if (!indicator)
                 return;
 
-            if (indicator.menu)
-                this.menuManager.removeMenu(indicator.menu);
+            if (indicator.menu) {
+                try {
+                    this.menuManager.removeMenu(indicator.menu);
+                } catch (e) {}
+            }
 
             this._disconnectIndicatorSignals(indicator);
-            indicator.destroy();
+            try {
+                indicator.destroy();
+            } catch (e) {}
             delete this.statusArea[role];
         }
 
